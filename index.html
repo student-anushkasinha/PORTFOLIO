@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmW7ZSIsn8hRR6Z8gQ7h99VJRvCEEBSroa59F7oEwVXBxXsIiZTk1_g0pomRTerHm54p8&usqp=CAU">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anushka Sinha Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/8afa9b64ff.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="header">
+        <button><a href="#" class="logo">SINHA{A}FOLIO</button>
+        <div class="container">
+            <nav>
+                <ul id="sidemenu">
+                    <li><a href="#header">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a><li>
+                    <i class="fas fa-times" onclick="closemenu()"></i>
+                    
+                </ul>
+                <i class="fas fa-bars" onclick="openmenu()"></i>
+            </nav>
+            <div class="header-text">
+                <span class="skills"></span>
+                <h2> Hi, I'm <span>Anushka Sinha</span></h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="about">
+        <div class="container">
+            <div class="row">
+                <div class="about-col-1">
+                    <img src="IMAGES/NICE.jpg" height="380" >
+                </div>
+                <div class="about-col-2">
+                    <h1 class="sub-title">About Me</h1>
+                    <p> An UnderGraduate who is Strong in design and integration with intuitive problem solving skills. Proficient in C,C++, Python, HTML, CSS, JavaScript and SQL. Ability to translate business requirements into technical solutions.I am currently exploring new opportunities .</p>
+
+                    <div class="tab-titles">
+                        <p class="tab-links active-link" onclick="opentab('skills')"> Skills</p>
+                        <p class="tab-links" onclick="opentab('education')"> Education</p>
+                    </div>
+
+                    <div class="tab-contents active-tab" id="skills">
+                        <ul>
+                            <li><span>Languages</span><br>C, C++, Python, HTML, CSS, Javascript</li>
+
+                            <li><span>Technologies</span><br> MySQL</li>
+
+                            <li><span>Tools/Platforms</span><br>Git, Github, MySQL
+                                Workbench, VSCode</li>
+                            
+                        </ul>
+                    </div>
+
+                
+
+                    <div class="tab-contents" id="education">
+                        <ul>
+                            <li><span>B.Tech in Electronics And Communication Engineering</span><br>GL Bajaj Institiute Of Technology And Mnagement,Greater Noida <br>(09/2024-present)</li>
+
+                            <li><span>SSC From CBSE</span><br>Army Public School,Kanpur Cantt <br>Class 10: 95%</li>
+                            <li><span>HSC From CBSE</span><br>Army Public School,Kanpur Cantt <br>Class 12: 88%</li>
+
+                            
+                        </ul>
+                    </div>
+                    <audio id="my song">
+                        <source src="AUDIO/">
+                    </audio>
+            
+            
+                
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+                   
+            
+
+
+
+
+
+<div id="services"> 
+    <div class="container"> 
+    <h1 class="sub-title"> For Services</h1> 
+    <div class="containerr"> 
+    
+    <div class="cardd">
+        <div class="iconn">
+            <img src="IMAGES/coding (1).png">
+        </div>
+        <div class="contentt">
+            <h2>Web Development</h2>
+            <p> Our web design services offer a harmonious blend of creativity and functionality, tailored to elevate your online presence.Our seasoned team of designers meticulously crafts visually stunning and user-centric websites. We specialize in responsive design, incorporating the latest industry trends and technologies to deliver websites that not only captivate your audience but also drive results. Whether you're establishing an online presence from scratch or looking to revamp an existing site, our web design services are committed to translating your vision into a compelling digital reality, leaving a lasting impression on your target audience.</p>
+        </div>
+        <a class="moree"></a>
+    </div>
+
+            
+
+
+            </div>
+            <button class="btnu">See more</button>
+        </div>
+    </div>
+
+    <script src="js/jquery-latest.min.js"></script>
+    <script>
+            $(".work").slice(0,3).show();
+            $(".btnu").on("click",function(){
+                $(".work:hidden").slice(0,3).show();
+
+                if($(".work:hidden").length==0)
+                {
+                    $(".btnu").fadeOut();
+
+                }
+            })
+    </script>
+
+    <div id="contact">
+    <div id="container">
+        <div class="container">
+            <div class="row">
+                <div class="contact-left">
+                    <h1 class="sub-title">Contact Me</h1>
+                    <p><i class="fa-solid fa-envelope"></i>anushkasinha2609@gmail.com</p>
+                    <p><i class="fa-solid fa-phone"></i>9236139482</p>
+                    <div class="social-icons">
+                        <a target="_blank" href="https://www.linkedin.com/in/anushka-sinha-39b543282?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fa-brands fa-linkedin"></i></a>
+                        <a target="_blank" href="https://github.com/student-anushkasinha"><i class="fa-brands fa-github"></i></a>
+                    </div>
+
+                    <!--<a target="_blank" href="Images/Resume Template.pdf" download class="btn btn2">Download Resume</a>-->
+
+
+                </div>
+                <div class="contact-right">
+                    <form name="submit-to-google-sheet">
+                        <input type="text" name="Name" placeholder="Your Good Name" required>
+                        <input type="email" name="Email" placeholder="Your Email" required>
+                        <textarea name="Message" rows="6" placeholder="Your Message or how I can help..."></textarea>
+                        <button type="submit" class="btn btn2">Submit</button>
+                    </form>
+                    <span id="msg"></span>
+                </div>
+
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>copyright @ Anushka Sinha. Made with  <i class="fas fa-heart"></i></p>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+
+
+
+
+
+    <script>
+
+        var tablinks = document.getElementsByClassName("tab-links");
+        var tabcontents = document.getElementsByClassName("tab-contents");
+
+        function opentab(tabname){
+            for(tablink of tablinks){
+                tablink.classList.remove("active-link");    
+            }
+            for(tabcontent of tabcontents){
+                tabcontent.classList.remove("active-tab");    
+            }
+
+            event.currentTarget.classList.add("active-link");
+            document.getElementById(tabname).classList.add("active-tab")
+        }
+    </script>
+
+
+
+    <script>
+        var sidemeu= document.getElementById("sidemenu");
+
+        function openmenu(){
+            sidemeu.style.right="0";
+        }
+        function closemenu(){
+            sidemeu.style.right="-200px";
+        }
+    </script>
+
+      <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzy8jCRTUiBisZwYPXbW70PQlJHjkCfLgnQCd-L7NeJd7Bkfbog6mRv06T92NNKpQsn/exec'
+        const form = document.forms['submit-to-google-sheet']
+
+        const msg=document.getElementById("msg")
+      
+        form.addEventListener('submit', e => {
+          e.preventDefault()
+          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                msg.innerHTML="Message sent Successfully"
+                setTimeout(function(){
+                    msg.innerHTML=""
+                },2000)
+                form.reset()
+
+
+            })
+            .catch(error => console.error('Error!', error.message))
+        })
+      </script>
+
+
+
+      <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+      <script src="script.js"></script>
+    
+       
+
+
+
+</body>
+</html>
