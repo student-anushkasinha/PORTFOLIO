@@ -18,9 +18,11 @@ html{
     font-size: 25px;
     color:blueviolet;
     text-decoration: none;
+}
+
+    
     
 
-}
 
 
 body{
@@ -68,7 +70,7 @@ nav ul li a::after{
     content: '';
     width: 0;
     height: 3px;
-    background: blueviolet;
+    background: white;
     position: absolute;
     left: 0;
     bottom: -6px;
