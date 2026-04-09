@@ -5,27 +5,33 @@ var typed = new Typed((".skills"),{
     backDelay : 1000,
     loop : true
 })
-window.addEventListener("load", () => {
+ window.addEventListener("DOMContentLoaded", () => {
 
-    const text = "Welcome to Anushka Sinha's portfolio. I am a web developer passionate about creating amazing projects.";
+  const text = "Welcome to Anushka Sinha's portfolio. I am a web developer passionate about creating amazing projects.";
 
-    const speech = new SpeechSynthesisUtterance(text);
+  const speech = new SpeechSynthesisUtterance(text);
 
-    // Voice settings
-    speech.lang = "en-US";
-    speech.rate = 1;
-    speech.pitch = 1;
-    speech.volume = 1;
+  speech.lang = "en-US";
+  speech.rate = 1;
+  speech.pitch = 1;
+  speech.volume = 1;
 
-    function speakNow() {
-      window.speechSynthesis.cancel(); // stop any previous speech
-      window.speechSynthesis.speak(speech);
+  function speakNow() {
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+  }
+
+  // Try immediately after small delay
+  setTimeout(speakNow, 500);
+
+  // If blocked, trigger when tab becomes active
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      speakNow();
     }
-
-    // Try autoplay
-    speakNow();
-
-    // Fallback (if autoplay blocked)
-    document.addEventListener("click", speakNow, { once: true });
-
   });
+
+  // Trigger when window gains focus (no click needed)
+  window.addEventListener("focus", speakNow);
+
+});
