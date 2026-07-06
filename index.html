@@ -1,241 +1,580 @@
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="IMAGES/SCREENSHOT .jpg">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anushka Sinha Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/8afa9b64ff.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anushka Sinha — ECE Undergrad &amp; Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg-deep:#0A1410;
+    --bg-panel:#101F19;
+    --bg-panel-2:#152820;
+    --copper:#C9814B;
+    --copper-dim:#8A5A34;
+    --signal:#5FE3B3;
+    --signal-dim:#2C6E56;
+    --ink:#EDEAE1;
+    --muted:#8AA096;
+    --line:#25392F;
+    --danger:#E37B6B;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg-deep);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:42px 42px;
+    opacity:0.12;
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0; letter-spacing:-0.01em;}
+  .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--copper);
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+ 
+  /* ===== Nav ===== */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(10,20,16,0.82);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1040px; margin:0 auto; padding:16px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:15px; font-weight:600; color:var(--ink);
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{width:8px;height:8px;border-radius:50%;background:var(--signal); box-shadow:0 0 8px var(--signal);}
+  nav.links{display:flex; gap:28px; align-items:center;}
+  nav.links a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; position:relative; padding:4px 0;
+    transition:color .2s ease;
+  }
+  nav.links a:hover, nav.links a:focus-visible{color:var(--signal);}
+  nav.links a::after{
+    content:""; position:absolute; left:0; bottom:-2px; height:1px; width:0%;
+    background:var(--signal); transition:width .25s ease;
+  }
+  nav.links a:hover::after{width:100%;}
+  #sound-toggle{
+    display:flex; align-items:center; gap:6px;
+    background:transparent; border:1px solid var(--line); color:var(--muted);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em;
+    padding:6px 10px; border-radius:var(--radius); cursor:pointer;
+    transition:border-color .2s, color .2s;
+  }
+  #sound-toggle:hover{border-color:var(--signal); color:var(--signal);}
+ 
+  /* ===== Schematic spine ===== */
+  .spine{
+    position:absolute; left:0; top:0; bottom:0; width:1px;
+    background:linear-gradient(to bottom, transparent, var(--copper-dim) 8%, var(--copper-dim) 92%, transparent);
+    display:none;
+  }
+  @media(min-width:900px){
+    .spine{display:block; left:50%; margin-left:-520px;}
+  }
+  .node{
+    position:absolute; left:-5px; width:11px; height:11px; border-radius:50%;
+    background:var(--bg-deep); border:1.5px solid var(--copper); z-index:2;
+  }
+  .node::after{
+    content:attr(data-label); position:absolute; left:20px; top:-3px;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--copper-dim); white-space:nowrap;
+  }
+ 
+  section{position:relative; padding:120px 0 100px;}
+ 
+  /* ===== Hero ===== */
+  .hero{padding-top:180px; min-height:88vh; display:flex; flex-direction:column; justify-content:center;}
+  .hero .label{margin-bottom:18px; display:block;}
+  .hero h1{
+    font-size:clamp(40px, 7vw, 76px); font-weight:600; line-height:1.04;
+    color:var(--ink);
+  }
+  .hero h1 span{color:var(--signal);}
+  .hero p.role{
+    font-family:'IBM Plex Mono',monospace; font-size:15px; color:var(--muted);
+    margin-top:18px; max-width:560px;
+  }
+  .scope{width:100%; max-width:640px; height:120px; margin-top:44px;}
+  .scope path.trace{
+    fill:none; stroke:var(--signal); stroke-width:2;
+    filter:drop-shadow(0 0 6px rgba(95,227,179,0.55));
+    stroke-dasharray:1400; stroke-dashoffset:1400;
+    animation:draw 2.4s ease-out forwards;
+  }
+  .scope path.grid{stroke:var(--line); stroke-width:1; fill:none;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .hero-cta{display:flex; gap:16px; margin-top:40px; flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.06em; text-transform:uppercase;
+    padding:13px 22px; border-radius:var(--radius); text-decoration:none;
+    cursor:pointer; transition:transform .15s ease, box-shadow .15s ease, background .2s ease;
+    display:inline-flex; align-items:center; gap:8px; border:1px solid transparent;
+  }
+  .btn-primary{background:var(--signal); color:#08130E; font-weight:600;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(95,227,179,0.25);}
+  .btn-ghost{border-color:var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--copper); color:var(--copper); transform:translateY(-2px);}
+ 
+  /* ===== Section heads ===== */
+  .sec-head{margin-bottom:52px;}
+  .sec-head h2{font-size:clamp(28px,4vw,40px); margin-top:10px;}
+  .sec-head .idx{color:var(--copper-dim);}
+ 
+  /* ===== About ===== */
+  .about-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px;}
+  @media(max-width:780px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{color:var(--muted); font-size:16px;}
+  .about-grid p strong{color:var(--ink); font-weight:500;}
+  .skill-panel{background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius); padding:26px;}
+  .skill-panel h3{font-size:14px; font-family:'IBM Plex Mono',monospace; color:var(--copper); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 12px;
+    border:1px solid var(--line); border-radius:20px; color:var(--ink);
+    background:var(--bg-panel-2); transition:border-color .2s, color .2s;
+  }
+  .chip:hover{border-color:var(--signal); color:var(--signal);}
+ 
+  .timeline{margin-top:16px; border-left:1px solid var(--line); padding-left:20px;}
+  .t-item{position:relative; margin-bottom:22px;}
+  .t-item:last-child{margin-bottom:0;}
+  .t-item::before{
+    content:""; position:absolute; left:-25px; top:5px; width:8px; height:8px;
+    border-radius:50%; background:var(--bg-deep); border:1.5px solid var(--copper);
+  }
+  .t-item .t-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--copper-dim); letter-spacing:0.06em; text-transform:uppercase;}
+  .t-item h4{font-size:15.5px; font-weight:500; margin:4px 0 2px; color:var(--ink);}
+  .t-item p{margin:0; font-size:13.5px; color:var(--muted);}
+ 
+  /* ===== Projects ===== */
+  .proj-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px;}
+  .card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px; transition:border-color .25s ease, transform .25s ease;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .card:hover{border-color:var(--signal-dim); transform:translateY(-4px);}
+  .card .tag{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--signal); letter-spacing:0.08em; text-transform:uppercase;}
+  .card h3{font-size:19px; color:var(--ink);}
+  .card p{font-size:13.5px; color:var(--muted); margin:0; flex-grow:1;}
+  .card .stack{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;}
+  .card .stack span{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--muted); border:1px solid var(--line); padding:3px 8px; border-radius:12px;}
+  .card a.link{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--copper); text-decoration:none; margin-top:6px;}
+  .card a.link:hover{color:var(--signal);}
+  .card.placeholder{border-style:dashed; align-items:center; justify-content:center; text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px;}
+ 
+  /* ===== Contact ===== */
+  .contact-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px;}
+  @media(max-width:780px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-info a{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-size:15px; margin-bottom:16px; transition:color .2s;}
+  .contact-info a:hover{color:var(--signal);}
+  .contact-info .k{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--copper-dim); display:block; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px;}
+  form{display:flex; flex-direction:column; gap:16px;}
+  label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;}
+  input, textarea{
+    background:var(--bg-panel); border:1px solid var(--line); color:var(--ink);
+    padding:12px 14px; border-radius:var(--radius); font-family:'Inter',sans-serif; font-size:14px;
+    outline:none; transition:border-color .2s;
+  }
+  input:focus, textarea:focus{border-color:var(--signal);}
+  textarea{resize:vertical; min-height:110px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  #form-status{font-family:'IBM Plex Mono',monospace; font-size:12.5px; min-height:18px;}
+  #form-status.ok{color:var(--signal);}
+  #form-status.err{color:var(--danger);}
+ 
+  footer{
+    border-top:1px solid var(--line); padding:32px 0; text-align:center;
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted);
+  }
+</style>
 </head>
 <body>
-    <div id="header">
-        <button><a href="#" class="logo">SINHA{A}FOLIO</button>
-        <div class="container">
-            <nav>
-                <ul id="sidemenu">
-                    <li><a href="#header">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a><li>
-                    <i class="fas fa-times" onclick="closemenu()"></i>
-                    
-                </ul>
-                <i class="fas fa-bars" onclick="openmenu()"></i>
-            </nav>
-            <div class="header-text">
-                <span class="skills"></span>
-                <h2> Hi, I'm <span>Anushka Sinha</span></h2>
-            </div>
-        </div>
+ 
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="dot"></span>SINHA.SYS</div>
+    <nav class="links">
+      <a href="#about" class="snd">About</a>
+      <a href="#work" class="snd">Work</a>
+      <a href="#certifications" class="snd">Certs</a>
+      <a href="#contact" class="snd">Contact</a>
+      <button id="sound-toggle" aria-pressed="true">🔊 Sound</button>
+    </nav>
+  </div>
+</header>
+ 
+<div class="spine">
+  <div class="node" style="top:10%;" data-label="J1 · HOME"></div>
+  <div class="node" style="top:30%;" data-label="J2 · ABOUT"></div>
+  <div class="node" style="top:52%;" data-label="J3 · WORK"></div>
+  <div class="node" style="top:74%;" data-label="J4 · CERTS"></div>
+  <div class="node" style="top:92%;" data-label="J5 · CONTACT"></div>
+</div>
+ 
+<div class="wrap">
+ 
+  <!-- HERO -->
+  <section class="hero" id="header">
+    <span class="label">// undergrad · IT + software</span>
+    <h1>Anushka Sinha builds<br>things that <span>hold a signal.</span></h1>
+    <p class="role">B.Tech, Information Technology (CGPA 8) — GL Bajaj Institute of Technology &amp; Management, Greater Noida. A motivated, adaptable learner with a strong foundation in Data Structures, frontend development, and data analytics.</p>
+ 
+    <svg class="scope" viewBox="0 0 640 120" preserveAspectRatio="none">
+      <path class="grid" d="M0,60 H640 M0,20 H640 M0,100 H640"/>
+      <path class="trace" d="M0,60 C 40,60 60,10 90,60 C 120,110 140,10 170,60 C 200,110 220,10 250,60 L 300,60 C 320,60 330,20 340,60 C 350,100 360,20 370,60 L 640,60"/>
+    </svg>
+ 
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary snd">See the work</a>
+      <a href="#contact" class="btn btn-ghost snd">Get in touch</a>
     </div>
-
-
-    <div id="about">
-        
-        <div class="container">
-            <div class="row">
-                <div class="about-col-1">
-                    <img src="IMAGES/NICE.jpg" height="380" >
-                </div>
-                <div class="about-col-2">
-                    <h1 class="sub-title">About Me</h1>
-                    <p> An UnderGraduate who is Strong in design and integration with intuitive problem solving skills. Proficient in C,C++, Python, HTML, CSS, JavaScript and SQL. Ability to translate business requirements into technical solutions.I am currently exploring new opportunities .</p>
-
-                    <div class="tab-titles">
-                        <p class="tab-links active-link" onclick="opentab('skills')"> Skills</p>
-                        <p class="tab-links" onclick="opentab('education')"> Education</p>
-                    </div>
-
-                    <div class="tab-contents active-tab" id="skills">
-                        <ul>
-                            <li><span>Languages</span><br>C, C++, Python, HTML, CSS, Javascript</li>
-
-                            <li><span>Technologies</span><br> MySQL</li>
-
-                            <li><span>Tools/Platforms Used</span><br>Git, Github, MySQL
-                                Workbench, VSCode</li>
-                            
-                        </ul>
-                    </div>
-
-                
-
-                    <div class="tab-contents" id="education">
-                        <ul>
-                            <li><span>B.Tech in Electronics And Communication Engineering</span><br>GL Bajaj Institiute Of Technology And Mnagement,Greater Noida <br>(09/2024-present)</li>
-
-                            <li><span>SSC From CBSE</span><br>Army Public School,Kanpur Cantt <br>Class 10: 95%</li>
-                            <li><span>HSC From CBSE</span><br>Army Public School,Kanpur Cantt <br>Class 12: 88%</li>
-
-                            
-                        </ul>
-                    </div>
-                    <audio id="my song">
-                        <source src="AUDIO/">
-                    </audio>
-            
-            
-                
-
-
-
-
-                </div>
-            </div>
-        </div>
+  </section>
+ 
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="sec-head">
+      <span class="label idx">01 / Profile</span>
+      <h2>About</h2>
     </div>
-                   
-            
-
-
-
-
-
-<div id="services"> 
-    <div class="container"> 
-    <h1 class="sub-title"> For Services</h1> 
-    <div class="containerr"> 
-    
-    <div class="cardd">
-        <div class="iconn">
-            <img src="IMAGES/coding (1).png">
+    <div class="about-grid">
+      <div>
+        <p><strong>I'm a motivated, adaptable learner</strong> with a strong foundation in Data Structures, frontend development, and data analytics. Passionate about building efficient, user-focused solutions while continuously sharpening my technical and problem-solving skills.</p>
+        <p style="margin-top:18px;">Seeking internship or entry-level opportunities to apply what I know, contribute to impactful projects, and grow in a collaborative, innovation-driven environment — committed to delivering high-quality results through continuous learning and a strong work ethic.</p>
+        <div class="chip-row" style="margin-top:20px;">
+          <span class="chip">Team Work</span>
+          <span class="chip">Problem Solving</span>
         </div>
-        <div class="contentt">
-            <h2>Web Development</h2>
-            <p> Our web design services offer a harmonious blend of creativity and functionality, tailored to elevate your online presence.Our seasoned team of designers meticulously crafts visually stunning and user-centric websites. We specialize in responsive design, incorporating the latest industry trends and technologies to deliver websites that not only captivate your audience but also drive results. Whether you're establishing an online presence from scratch or looking to revamp an existing site, our web design services are committed to translating your vision into a compelling digital reality, leaving a lasting impression on your target audience.</p>
+ 
+        <div class="timeline" style="margin-top:32px;" id="education-list">
+          <!-- populated by JS (defaults, or Supabase if connected) -->
         </div>
-        <a class="moree"></a>
+      </div>
+ 
+      <div class="skill-panel">
+        <h3>Languages</h3>
+        <div class="chip-row" id="skills-languages"></div>
+        <h3>Technologies</h3>
+        <div class="chip-row" id="skills-tech"></div>
+        <h3>Tools / Platforms</h3>
+        <div class="chip-row" id="skills-tools"></div>
+      </div>
     </div>
-
-            
-
-
-            </div>
-            <button class="btnu">See more</button>
-        </div>
+  </section>
+ 
+  <!-- WORK -->
+  <section id="work">
+    <div class="sec-head">
+      <span class="label idx">02 / Selected work</span>
+      <h2>Things I've built</h2>
     </div>
-
-    <script src="js/jquery-latest.min.js"></script>
-    <script>
-            $(".work").slice(0,3).show();
-            $(".btnu").on("click",function(){
-                $(".work:hidden").slice(0,3).show();
-
-                if($(".work:hidden").length==0)
-                {
-                    $(".btnu").fadeOut();
-
-                }
-            })
-    </script>
-
-    <div id="contact">
-    <div id="container">
-        <div class="container">
-            <div class="row">
-                <div class="contact-left">
-                    <h1 class="sub-title">Contact Me</h1>
-                    <p><i class="fa-solid fa-envelope"></i>anushkasinha2609@gmail.com</p>
-                    <p><i class="fa-solid fa-phone"></i>9236139482</p>
-                    <div class="social-icons">
-                        <a target="_blank" href="https://www.linkedin.com/in/anushka-sinha-39b543282?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fa-brands fa-linkedin"></i></a>
-                        <a target="_blank" href="https://github.com/student-anushkasinha"><i class="fa-brands fa-github"></i></a>
-                    </div>
-
-                    <!--<a target="_blank" href="Images/Resume Template.pdf" download class="btn btn2">Download Resume</a>-->
-
-
-                </div>
-                <div class="contact-right">
-                    <form name="submit-to-google-sheet">
-                        <input type="text" name="Name" placeholder="Your Good Name" required>
-                        <input type="email" name="Email" placeholder="Your Email" required>
-                        <textarea name="Message" rows="6" placeholder="Your Message or how I can help..."></textarea>
-                        <button type="submit" class="btn btn2">Submit</button>
-                    </form>
-                    <span id="msg"></span>
-                </div>
-
-                </div>
-            </div>
-
-            <div class="copyright">
-                <p>copyright @ Anushka Sinha. Made with  <i class="fas fa-heart"></i></p>
-            </div>
-        </div>
+    <div class="proj-grid" id="project-grid">
+      <!-- populated by JS -->
     </div>
-
-    
-
-
-
-
-
-
-
-    <script>
-
-        var tablinks = document.getElementsByClassName("tab-links");
-        var tabcontents = document.getElementsByClassName("tab-contents");
-
-        function opentab(tabname){
-            for(tablink of tablinks){
-                tablink.classList.remove("active-link");    
-            }
-            for(tabcontent of tabcontents){
-                tabcontent.classList.remove("active-tab");    
-            }
-
-            event.currentTarget.classList.add("active-link");
-            document.getElementById(tabname).classList.add("active-tab")
-        }
-    </script>
-
-
-
-    <script>
-        var sidemeu= document.getElementById("sidemenu");
-
-        function openmenu(){
-            sidemeu.style.right="0";
-        }
-        function closemenu(){
-            sidemeu.style.right="-200px";
-        }
-    </script>
-
-      <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzy8jCRTUiBisZwYPXbW70PQlJHjkCfLgnQCd-L7NeJd7Bkfbog6mRv06T92NNKpQsn/exec'
-        const form = document.forms['submit-to-google-sheet']
-
-        const msg=document.getElementById("msg")
-      
-        form.addEventListener('submit', e => {
-          e.preventDefault()
-          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                msg.innerHTML="Message sent Successfully"
-                setTimeout(function(){
-                    msg.innerHTML=""
-                },2000)
-                form.reset()
-
-
-            })
-            .catch(error => console.error('Error!', error.message))
-        })
-      </script>
-
-
-
-      <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-      <script src="script.js"></script>
-    
-       
-
-
-
+  </section>
+ 
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="sec-head">
+      <span class="label idx">03 / Verified</span>
+      <h2>Certifications</h2>
+    </div>
+    <div class="proj-grid">
+      <div class="card">
+        <div class="tag">course</div>
+        <h3>JavaScript</h3>
+        <p>Udemy</p>
+      </div>
+      <div class="card">
+        <div class="tag">course</div>
+        <h3>Gen AI for Executive and Business Leaders</h3>
+        <p>Authorized by IBM, offered by Coursera</p>
+      </div>
+      <div class="card">
+        <div class="tag">simulation</div>
+        <h3>Software Engineering Job Simulation</h3>
+        <p>Goldman Sachs, via Forage</p>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="sec-head">
+      <span class="label idx">04 / Reach out</span>
+      <h2>Let's talk</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <a href="mailto:anushkasinha2609@gmail.com" class="snd">
+          <span>
+            <span class="k">Email</span>
+            anushkasinha2609@gmail.com
+          </span>
+        </a>
+        <a href="tel:+919236139482" class="snd">
+          <span>
+            <span class="k">Phone</span>
+            +91 92361 39482
+          </span>
+        </a>
+        <a href="#" class="snd">
+          <span>
+            <span class="k">Location</span>
+            Delhi, India
+          </span>
+        </a>
+        <!-- TODO: paste your real profile URLs below (currently "#" placeholders) -->
+        <a href="#" target="_blank" rel="noopener" class="snd">
+          <span>
+            <span class="k">https://www.linkedin.com/in/anushka-sinha-39b543282/</span>
+            View profile
+          </span>
+        </a>
+        <a href="#" target="_blank" rel="noopener" class="snd">
+          <span>
+            <span class="k">https://github.com/student-anushkasinha</span>
+            View profile
+          </span>
+        </a>
+        <a href="#" target="_blank" rel="noopener" class="snd">
+          <span>
+            <span class="k">https://leetcode.com/u/AnushkaSinha2196/</span>
+            View profile
+          </span>
+        </a>
+      </div>
+ 
+      <form id="contact-form">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary snd" style="align-self:flex-start;">Send message</button>
+        <div id="form-status"></div>
+      </form>
+    </div>
+  </section>
+ 
+</div>
+ 
+<footer>
+  © <span id="year"></span> Anushka Sinha — built with intent, not a template.
+</footer>
+ 
+<script>
+/* ================= SOUND ENGINE (synthesized — no audio files needed) ================= */
+let audioCtx = null;
+let soundOn = true;
+function ensureCtx(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+function playClick(freq = 720, dur = 0.06, type = 'sine', gain = 0.05){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(freq * 0.6, ctx.currentTime + dur);
+  g.gain.setValueAtTime(gain, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+  osc.connect(g).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + dur);
+}
+document.querySelectorAll('.snd').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>playClick(920, 0.03, 'sine', 0.025));
+  el.addEventListener('click', ()=>playClick(560, 0.07, 'triangle', 0.06));
+});
+const soundToggle = document.getElementById('sound-toggle');
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.setAttribute('aria-pressed', soundOn);
+  soundToggle.textContent = soundOn ? '🔊 Sound' : '🔇 Muted';
+});
+ 
+document.getElementById('year').textContent = new Date().getFullYear();
+ 
+/* ================= CONTENT — defaults (used if Supabase isn't configured) ================= */
+const DEFAULTS = {
+  skills: {
+    languages: ['C++','C','Python','SQL','HTML','CSS','JavaScript','React'],
+    tech: ['Data Structures & Algorithms','Operating Systems','Database Design','MongoDB','MySQL','Website Design & Development'],
+    tools: ['Git','GitHub','VS Code','MS Excel','Vercel']
+  },
+  education: [
+    { label:'2024 — 2028', title:'B.Tech, Information Technology · CGPA 8', detail:'GL Bajaj Institute of Technology & Management, Greater Noida, UP' },
+    { label:'2022 — 2023 · 88%', title:'12th, Army Public School', detail:'Kanpur, Uttar Pradesh' },
+    { label:'2020 — 2021 · 95%', title:'10th, Army Public School', detail:'Kanpur, Uttar Pradesh' }
+  ],
+  projects: [
+    { tag:'project', title:'Weather App', description:'A responsive weather application that fetches live conditions and forecasts from a public weather API by city or geolocation — covers loading/error states and a clean, at-a-glance UI.', stack:['JavaScript','REST API','HTML','CSS'], link:'#' },
+    { tag:'project', title:'AI PDF Summarizer', description:'A tool that takes an uploaded PDF and generates a concise AI-powered summary of its contents, turning long documents into a quick, readable digest.', stack:['Python','AI/LLM API','PDF Parsing'], link:'#' }
+  ]
+};
+ 
+/* ================= SUPABASE (optional — fill these in to make content database-driven) =================
+   1. Create a free project at https://supabase.com
+   2. Run the SQL in supabase-schema.sql (provided alongside this file)
+   3. Paste your project URL + anon public key below
+   4. Everything below will then read/write from real tables instead of the DEFAULTS above.
+*/
+const SUPABASE_URL = ''; // e.g. 'https://xxxxx.supabase.co'
+const SUPABASE_ANON_KEY = ''; // your public anon key
+let sb = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+ 
+function chip(text){ const s = document.createElement('span'); s.className='chip'; s.textContent = text; return s; }
+ 
+function renderSkills(skills){
+  const l = document.getElementById('skills-languages'); l.innerHTML='';
+  const t = document.getElementById('skills-tech'); t.innerHTML='';
+  const p = document.getElementById('skills-tools'); p.innerHTML='';
+  skills.languages.forEach(x=>l.appendChild(chip(x)));
+  skills.tech.forEach(x=>t.appendChild(chip(x)));
+  skills.tools.forEach(x=>p.appendChild(chip(x)));
+}
+ 
+function renderEducation(items){
+  const el = document.getElementById('education-list'); el.innerHTML='';
+  items.forEach(item=>{
+    const div = document.createElement('div'); div.className='t-item';
+    div.innerHTML = `<span class="t-label">${item.label}</span><h4>${item.title}</h4><p>${item.detail}</p>`;
+    el.appendChild(div);
+  });
+}
+ 
+function renderProjects(items){
+  const grid = document.getElementById('project-grid'); grid.innerHTML='';
+  items.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card' + (p.tag === 'placeholder' ? ' placeholder' : '');
+    if(p.tag === 'placeholder'){
+      card.innerHTML = `<div class="tag">${p.tag}</div><h3>${p.title}</h3><p>${p.description}</p>`;
+    } else {
+      card.innerHTML = `
+        <div class="tag">${p.tag || 'project'}</div>
+        <h3>${p.title}</h3>
+        <p>${p.description}</p>
+        <div class="stack">${(p.stack||[]).map(s=>`<span>${s}</span>`).join('')}</div>
+        ${p.link ? `<a class="link snd" href="${p.link}" target="_blank" rel="noopener">View →</a>` : ''}
+      `;
+    }
+    grid.appendChild(card);
+  });
+}
+ 
+async function loadContent(){
+  if(!sb){
+    renderSkills(DEFAULTS.skills);
+    renderEducation(DEFAULTS.education);
+    renderProjects(DEFAULTS.projects);
+    return;
+  }
+  try{
+    const [{data:skillsRows}, {data:eduRows}, {data:projRows}] = await Promise.all([
+      sb.from('skills').select('*').order('sort_order'),
+      sb.from('education').select('*').order('sort_order'),
+      sb.from('projects').select('*').order('sort_order')
+    ]);
+    if(skillsRows && skillsRows.length){
+      const grouped = {languages:[], tech:[], tools:[]};
+      skillsRows.forEach(r => grouped[r.category]?.push(r.name));
+      renderSkills(grouped);
+    } else renderSkills(DEFAULTS.skills);
+ 
+    if(eduRows && eduRows.length) renderEducation(eduRows); else renderEducation(DEFAULTS.education);
+    if(projRows && projRows.length) renderProjects(projRows); else renderProjects(DEFAULTS.projects);
+  }catch(e){
+    console.warn('Supabase content load failed, using defaults:', e);
+    renderSkills(DEFAULTS.skills);
+    renderEducation(DEFAULTS.education);
+    renderProjects(DEFAULTS.projects);
+  }
+}
+loadContent();
+ 
+/* ================= CONTACT FORM ================= */
+const form = document.getElementById('contact-form');
+const status = document.getElementById('form-status');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+  status.className=''; status.textContent = 'Sending…';
+ 
+  if(sb){
+    const { error } = await sb.from('messages').insert([{ name, email, message }]);
+    if(error){
+      status.className='err'; status.textContent = 'Something went wrong — please email me directly instead.';
+      console.error(error);
+    } else {
+      status.className='ok'; status.textContent = 'Message received — I\'ll get back to you soon.';
+      form.reset();
+    }
+  } else {
+    // No database configured yet — fall back to opening the user's mail client.
+    window.location.href = `mailto:anushkasinha2609@gmail.com?subject=Portfolio contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(message + '\n\nFrom: ' + email)}`;
+    status.className='ok'; status.textContent = 'Opening your email client…';
+  }
+});
+</script>
+ 
 </body>
 </html>
+ 
